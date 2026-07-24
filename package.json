@@ -10,7 +10,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "migrate": "tsx server/src/migrate.ts",
-    "vercel-build": "tsx server/src/migrate.ts && vite build",
+    "vercel-build": "node scripts/prebuild.mjs && vite build",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
