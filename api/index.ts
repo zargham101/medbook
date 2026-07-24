@@ -49,6 +49,14 @@ const app = express();
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
+app.use((req: any, _res: any, next: any) => {
+  const fwd = req.headers['x-vercel-forwarded-url'] || req.headers['x-forwarded-url'];
+  if (fwd && typeof fwd === 'string') {
+    try { req.url = new URL(fwd, 'http://n').pathname + (req.url?.includes('?') ? req.url.slice(req.url.indexOf('?')) : ''); } catch {}
+  }
+  next();
+});
+
 app.get('/api/health', (_: any, res: any) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
@@ -480,8 +488,5 @@ app.patch('/api/doctor-profile', authenticate, async (req: any, res: any) => {
 });
 
 export default function handler(req: any, res: any) {
-  const rawPath = req.query.path || '';
-  const path = Array.isArray(rawPath) ? rawPath[0] : rawPath;
-  req.url = '/api/' + path;
   app(req, res);
 }
