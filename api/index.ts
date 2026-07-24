@@ -1,5 +1,27 @@
-import '../server/src/hello';
+import express from 'express';
+import cors from 'cors';
+import authRoutes from './routes/auth';
+import doctorsRoutes from './routes/doctors';
+import appointmentsRoutes from './routes/appointments';
+import reviewsRoutes from './routes/reviews';
+import doctorProfileRoutes from './routes/doctorProfile';
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use('/api/auth', authRoutes);
+app.use('/api/doctors', doctorsRoutes);
+app.use('/api/appointments', appointmentsRoutes);
+app.use('/api/reviews', reviewsRoutes);
+app.use('/api/doctor-profile', doctorProfileRoutes);
+app.get('/api/health', (_: any, res: any) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 export default function handler(req: any, res: any) {
-  res.json({ step: 'hello-imported' });
+  const originalPath = req.query.path as string | undefined;
+  if (originalPath) {
+    req.url = '/api/' + originalPath;
+  }
+  return app(req, res);
 }
