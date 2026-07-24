@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import serverless from 'serverless-http';
 
 const app = express();
 
@@ -10,6 +11,4 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-export default function handler(req: any, res: any) {
-  app(req, res);
-}
+export const handler = serverless(app);
