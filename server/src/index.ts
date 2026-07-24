@@ -1,10 +1,11 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import authRoutes from './routes/auth.js';
-import doctorsRoutes from './routes/doctors.js';
-import appointmentsRoutes from './routes/appointments.js';
-import reviewsRoutes from './routes/reviews.js';
-import doctorProfileRoutes from './routes/doctorProfile.js';
+import authRoutes from './routes/auth';
+import doctorsRoutes from './routes/doctors';
+import appointmentsRoutes from './routes/appointments';
+import reviewsRoutes from './routes/reviews';
+import doctorProfileRoutes from './routes/doctorProfile';
 
 export const app = express();
 

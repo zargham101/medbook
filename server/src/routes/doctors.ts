@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { query } from '../db.js';
-import { authenticate, optionalAuth } from '../middleware/auth.js';
+import { query } from '../db';
+import { authenticate, optionalAuth } from '../middleware/auth';
 
 const router = Router();
 
