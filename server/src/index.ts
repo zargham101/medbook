@@ -2,11 +2,11 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
-import authRoutes from '../../api/routes/auth';
-import doctorsRoutes from '../../api/routes/doctors';
-import appointmentsRoutes from '../../api/routes/appointments';
-import reviewsRoutes from '../../api/routes/reviews';
-import doctorProfileRoutes from '../../api/routes/doctorProfile';
+import authRoutes from './routes/auth';
+import doctorsRoutes from './routes/doctors';
+import appointmentsRoutes from './routes/appointments';
+import reviewsRoutes from './routes/reviews';
+import doctorProfileRoutes from './routes/doctorProfile';
 
 export const app = express();
 
