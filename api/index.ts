@@ -1,8 +1,11 @@
 import express from 'express';
-const app = express();
+import authRoutes from './routes/auth';
 
+const app = express();
+app.use(express.json());
+app.use('/api/auth', authRoutes);
 app.get('/api/health', (_: any, res: any) => {
-  res.json({ status: 'ok', path: _.path, query: _.query });
+  res.json({ status: 'ok' });
 });
 
 export default function handler(req: any, res: any) {
