@@ -1,5 +1,5 @@
-import '../server/src/db';
+import pg from 'pg';
 
 export default function handler(req: any, res: any) {
-  res.json({ step: 'db-imported' });
+  res.json({ step: 'pg-imported', hasPool: typeof pg.Pool === 'function' });
 }
