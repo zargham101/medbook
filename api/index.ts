@@ -1,5 +1,5 @@
-import '../server/src/db';
+import '../server/src/hello';
 
 export default function handler(req: any, res: any) {
-  res.json({ step: 'db-imported' });
+  res.json({ step: 'hello-imported' });
 }
