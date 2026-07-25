@@ -175,7 +175,7 @@ export function LandingPage() {
                 ))}
               </ul>
               <Link to="/signup">
-                <Button className="mt-8 bg-white text-slate-900 hover:bg-slate-100">
+                <Button className="mt-8 bg-slate-100 text-slate-900 hover:bg-slate-100">
                   Join as a doctor
                   <ArrowRight className="h-4 w-4" />
                 </Button>
