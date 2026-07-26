@@ -740,6 +740,10 @@ app.get('/api/debug', (req: any, res: any) => {
   res.json({ url: req.url, originalUrl: req.originalUrl, path: req.path, method: req.method, hasResendKey: !!RESEND_API_KEY, fromEmail: FROM_EMAIL });
 });
 
+app.use((req: any, res: any) => {
+  res.status(404).json({ error: 'route not found', url: req.url, originalUrl: req.originalUrl, path: req.path, method: req.method });
+});
+
 app.post('/api/test-email', async (req: any, res: any) => {
   const auth = req.headers.authorization;
   const secret = process.env.CRON_SECRET;
