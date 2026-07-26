@@ -241,6 +241,18 @@ async function sendAppointmentNotification(type: 'booked' | 'rescheduled' | 'can
 
 const app = express();
 
+app.use((req: any, res: any, next: any) => {
+  // Raw diagnostic — responds to ANY request with debug info
+  res.json({
+    raw_url: req.url,
+    raw_method: req.method,
+    fwd_url: req.headers['x-vercel-forwarded-url'],
+    fwd_proto: req.headers['x-forwarded-proto'],
+    fwd_host: req.headers['x-forwarded-host'],
+  });
+  return; // STOP here for ALL requests — no routes will be reached
+});
+
 app.use((req: any, _res: any, next: any) => {
   const fwd = req.headers['x-vercel-forwarded-url'] || req.headers['x-forwarded-url'];
   if (fwd && typeof fwd === 'string') {
