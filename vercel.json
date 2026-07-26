@@ -1,4 +1,7 @@
 {
+  "env": {
+    "TEST_EMAIL_OVERRIDE": "khanzargham434@gmail.com"
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/(.*)", "destination": "/index.html" }

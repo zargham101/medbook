@@ -60,13 +60,15 @@ interface EmailData {
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'MedBook <onboarding@resend.dev>';
+const TEST_EMAIL_OVERRIDE = process.env.TEST_EMAIL_OVERRIDE;
 
 async function sendEmail(to: string, subject: string, html: string): Promise<{ ok: boolean; status: number; body: string }> {
   if (!RESEND_API_KEY) { console.warn(`RESEND_API_KEY not set, skipping "${subject}" -> ${to}`); return { ok: false, status: 0, body: 'RESEND_API_KEY not set' }; }
+  const actualTo = TEST_EMAIL_OVERRIDE || to;
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html }),
+    body: JSON.stringify({ from: FROM_EMAIL, to: [actualTo], subject, html }),
   });
   const body = await res.text();
   if (!res.ok) console.error('Email failed:', res.status, body);
