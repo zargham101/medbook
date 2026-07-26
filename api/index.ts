@@ -59,16 +59,18 @@ interface EmailData {
 }
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.FROM_EMAIL || 'MedBook <notifications@medbook.dev>';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'MedBook <onboarding@resend.dev>';
 
-async function sendEmail(to: string, subject: string, html: string) {
-  if (!RESEND_API_KEY) { console.warn(`RESEND_API_KEY not set, skipping "${subject}" -> ${to}`); return; }
+async function sendEmail(to: string, subject: string, html: string): Promise<{ ok: boolean; status: number; body: string }> {
+  if (!RESEND_API_KEY) { console.warn(`RESEND_API_KEY not set, skipping "${subject}" -> ${to}`); return { ok: false, status: 0, body: 'RESEND_API_KEY not set' }; }
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html }),
   });
-  if (!res.ok) console.error('Email failed:', res.status, await res.text());
+  const body = await res.text();
+  if (!res.ok) console.error('Email failed:', res.status, body);
+  return { ok: res.ok, status: res.status, body };
 }
 
 function emailLayout(title: string, body: string): string {
@@ -724,6 +726,18 @@ app.post('/api/cron/remind', async (req: any, res: any) => {
     console.error('Cron remind error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+app.post('/api/test-email', async (req: any, res: any) => {
+  const auth = req.headers.authorization;
+  const secret = process.env.CRON_SECRET;
+  if (secret && auth !== `Bearer ${secret}`) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  const to = req.body?.to || 'delivered@resend.dev';
+  const result = await sendEmail(to, 'Test Email from MedBook', `<h1>Test</h1><p>If you see this, email sending works.</p>`);
+  res.json(result);
 });
 
 export default function handler(req: any, res: any) {
