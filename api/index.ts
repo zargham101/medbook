@@ -240,16 +240,21 @@ async function sendAppointmentNotification(type: 'booked' | 'rescheduled' | 'can
 }
 
 const app = express();
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
 
-app.use((req: any, _res: any, next: any) => {
+app.use((req: any, res: any, next: any) => {
   const fwd = req.headers['x-vercel-forwarded-url'] || req.headers['x-forwarded-url'];
   if (fwd && typeof fwd === 'string') {
     try { req.url = new URL(fwd, 'http://n').pathname + (req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : ''); } catch {}
   }
+  if (req.headers['x-debug'] || req.url === '/api/debug') {
+    res.json({ url: req.url, fwd: req.headers['x-vercel-forwarded-url'], method: req.method });
+    return;
+  }
   next();
 });
+
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json());
 
 app.get('/api/health', (_: any, res: any) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
