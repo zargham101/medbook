@@ -243,6 +243,22 @@ const app = express();
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
+app.use((req: any, _res: any, next: any) => {
+  const qIndex = req.url.indexOf('?');
+  if (qIndex !== -1) {
+    try {
+      const params = new URLSearchParams(req.url.slice(qIndex + 1));
+      const p = params.get('path');
+      if (p !== null) { req.url = '/api/' + p; next(); return; }
+    } catch {}
+  }
+  const fwd = req.headers['x-vercel-forwarded-url'] || req.headers['x-forwarded-url'];
+  if (fwd && typeof fwd === 'string') {
+    try { req.url = new URL(fwd, 'http://n').pathname + (req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : ''); } catch {}
+  }
+  next();
+});
+
 app.get('/api/health', (_: any, res: any) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
@@ -728,8 +744,8 @@ app.post('/api/cron/remind', async (req: any, res: any) => {
   }
 });
 
-app.get('/api/test-email', (req: any, res: any) => {
-  res.json({ url: req.url, originalUrl: req.originalUrl, path: req.path, query: req.query, method: req.method });
+app.get('/api/debug', (req: any, res: any) => {
+  res.json({ url: req.url, originalUrl: req.originalUrl, path: req.path, method: req.method, hasResendKey: !!RESEND_API_KEY, fromEmail: FROM_EMAIL });
 });
 
 app.post('/api/test-email', async (req: any, res: any) => {
@@ -745,11 +761,5 @@ app.post('/api/test-email', async (req: any, res: any) => {
 });
 
 export default function handler(req: any, res: any) {
-  const qIndex = req.url.indexOf('?');
-  if (qIndex !== -1) {
-    const params = new URLSearchParams(req.url.slice(qIndex + 1));
-    const p = params.get('path');
-    if (p !== null) req.url = '/api/' + p;
-  }
   app(req, res);
 }
