@@ -241,18 +241,6 @@ async function sendAppointmentNotification(type: 'booked' | 'rescheduled' | 'can
 
 const app = express();
 
-app.use((req: any, res: any, next: any) => {
-  // Raw diagnostic — responds to ANY request with debug info
-  res.json({
-    raw_url: req.url,
-    raw_method: req.method,
-    fwd_url: req.headers['x-vercel-forwarded-url'],
-    fwd_proto: req.headers['x-forwarded-proto'],
-    fwd_host: req.headers['x-forwarded-host'],
-  });
-  return; // STOP here for ALL requests — no routes will be reached
-});
-
 app.use((req: any, _res: any, next: any) => {
   const fwd = req.headers['x-vercel-forwarded-url'] || req.headers['x-forwarded-url'];
   if (fwd && typeof fwd === 'string') {
@@ -264,8 +252,15 @@ app.use((req: any, _res: any, next: any) => {
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
-app.get('/api/health', (_: any, res: any) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get('/api/health', (req: any, res: any) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    url: req.url,
+    originalUrl: req.originalUrl,
+    path: req.path,
+    fwd_url: req.headers['x-vercel-forwarded-url'],
+  });
 });
 
 // Debug endpoint (early in file for testing)
