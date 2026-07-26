@@ -241,14 +241,10 @@ async function sendAppointmentNotification(type: 'booked' | 'rescheduled' | 'can
 
 const app = express();
 
-app.use((req: any, res: any, next: any) => {
+app.use((req: any, _res: any, next: any) => {
   const fwd = req.headers['x-vercel-forwarded-url'] || req.headers['x-forwarded-url'];
   if (fwd && typeof fwd === 'string') {
     try { req.url = new URL(fwd, 'http://n').pathname + (req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : ''); } catch {}
-  }
-  if (req.headers['x-debug'] || req.url === '/api/debug') {
-    res.json({ url: req.url, fwd: req.headers['x-vercel-forwarded-url'], method: req.method });
-    return;
   }
   next();
 });
@@ -258,6 +254,11 @@ app.use(express.json());
 
 app.get('/api/health', (_: any, res: any) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Debug endpoint (early in file for testing)
+app.get('/api/debug', (req: any, res: any) => {
+  res.json({ url: req.url, originalUrl: req.originalUrl, path: req.path, method: req.method });
 });
 
 app.post('/api/auth/signup', async (req: any, res: any) => {
@@ -741,14 +742,6 @@ app.post('/api/cron/remind', async (req: any, res: any) => {
   }
 });
 
-app.get('/api/debug', (req: any, res: any) => {
-  res.json({ url: req.url, originalUrl: req.originalUrl, path: req.path, method: req.method, hasResendKey: !!RESEND_API_KEY, fromEmail: FROM_EMAIL });
-});
-
-app.use((req: any, res: any) => {
-  res.status(404).json({ error: 'route not found', url: req.url, originalUrl: req.originalUrl, path: req.path, method: req.method });
-});
-
 app.post('/api/test-email', async (req: any, res: any) => {
   const auth = req.headers.authorization;
   const secret = process.env.CRON_SECRET;
@@ -759,6 +752,10 @@ app.post('/api/test-email', async (req: any, res: any) => {
   const to = req.body?.to || 'delivered@resend.dev';
   const result = await sendEmail(to, 'Test Email from MedBook', `<h1>Test</h1><p>If you see this, email sending works.</p>`);
   res.json(result);
+});
+
+app.use((req: any, res: any) => {
+  res.status(404).json({ error: 'route not found', url: req.url, originalUrl: req.originalUrl, path: req.path, method: req.method });
 });
 
 export default function handler(req: any, res: any) {
