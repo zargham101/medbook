@@ -244,14 +244,6 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
 app.use((req: any, _res: any, next: any) => {
-  const qIndex = req.url.indexOf('?');
-  if (qIndex !== -1) {
-    try {
-      const params = new URLSearchParams(req.url.slice(qIndex + 1));
-      const p = params.get('path');
-      if (p !== null) { req.url = '/api/' + p; next(); return; }
-    } catch {}
-  }
   const fwd = req.headers['x-vercel-forwarded-url'] || req.headers['x-forwarded-url'];
   if (fwd && typeof fwd === 'string') {
     try { req.url = new URL(fwd, 'http://n').pathname + (req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : ''); } catch {}
