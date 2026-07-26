@@ -728,6 +728,10 @@ app.post('/api/cron/remind', async (req: any, res: any) => {
   }
 });
 
+app.get('/api/test-email', (req: any, res: any) => {
+  res.json({ url: req.url, originalUrl: req.originalUrl, path: req.path, query: req.query, method: req.method });
+});
+
 app.post('/api/test-email', async (req: any, res: any) => {
   const auth = req.headers.authorization;
   const secret = process.env.CRON_SECRET;
@@ -741,8 +745,11 @@ app.post('/api/test-email', async (req: any, res: any) => {
 });
 
 export default function handler(req: any, res: any) {
-  const rawPath = req.query.path;
-  const path = Array.isArray(rawPath) ? rawPath[0] : rawPath;
-  if (path !== undefined) req.url = '/api/' + path;
+  const qIndex = req.url.indexOf('?');
+  if (qIndex !== -1) {
+    const params = new URLSearchParams(req.url.slice(qIndex + 1));
+    const p = params.get('path');
+    if (p !== null) req.url = '/api/' + p;
+  }
   app(req, res);
 }
