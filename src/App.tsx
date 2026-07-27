@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
 import { Navbar, Footer } from '@/components/Layout';
+import { InstallPrompt } from '@/components/InstallPrompt';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { LandingPage } from '@/pages/LandingPage';
 import { DoctorsDirectory } from '@/pages/DoctorsDirectory';
@@ -21,6 +22,7 @@ function AppLayout() {
         <Outlet />
       </main>
       <Footer />
+      <InstallPrompt />
     </div>
   );
 }
