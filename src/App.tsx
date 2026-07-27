@@ -8,12 +8,15 @@ import { DoctorProfilePage } from '@/pages/DoctorProfilePage';
 import { PatientDashboard } from '@/pages/PatientDashboard';
 import { DoctorDashboard } from '@/pages/DoctorDashboard';
 import { LoginPage, SignupPage } from '@/pages/AuthPages';
+import { AboutUs } from '@/pages/AboutUs';
+import { ContactUs } from '@/pages/ContactUs';
+import { BlogPage } from '@/pages/BlogPage';
 
 function AppLayout() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-50 to-white">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 pt-16">
         <Outlet />
       </main>
       <Footer />
@@ -30,6 +33,9 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/doctors" element={<DoctorsDirectory />} />
             <Route path="/doctors/:doctorId" element={<DoctorProfilePage />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/blog" element={<BlogPage />} />
             <Route
               path="/patient"
               element={

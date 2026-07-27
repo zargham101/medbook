@@ -13,19 +13,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-teal-600 text-white hover:bg-teal-700 active:bg-teal-800 shadow-sm shadow-teal-600/20',
+    'bg-gradient-to-r from-brand-600 to-brand-500 text-white hover:from-brand-700 hover:to-brand-600 active:from-brand-800 active:to-brand-700 shadow-md shadow-brand-600/25 hover:shadow-lg hover:shadow-brand-600/30',
   secondary:
-    'bg-slate-900 text-white hover:bg-slate-800 active:bg-slate-950 shadow-sm',
+    'bg-slate-900 text-white hover:bg-slate-800 active:bg-slate-950 shadow-sm shadow-slate-900/10',
   outline:
-    'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-400 active:bg-slate-100',
+    'border border-slate-200 bg-white/80 text-slate-700 hover:bg-white hover:border-slate-300 active:bg-slate-50 backdrop-blur-sm',
   ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 active:bg-slate-200',
   danger:
-    'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-sm shadow-red-600/20',
+    'bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-700 hover:to-red-600 active:from-red-800 active:to-red-700 shadow-md shadow-red-600/25',
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'h-9 px-3.5 text-sm rounded-lg gap-1.5',
-  md: 'h-11 px-5 text-sm rounded-lg gap-2',
+  sm: 'h-9 px-3.5 text-sm rounded-xl gap-1.5',
+  md: 'h-11 px-5 text-sm rounded-xl gap-2',
   lg: 'h-12 px-6 text-base rounded-xl gap-2',
 };
 
@@ -35,7 +35,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={disabled || loading}
-        className={`inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+        className={`inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
         {...props}
       >
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -48,7 +48,23 @@ Button.displayName = 'Button';
 
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`rounded-2xl border border-slate-200 bg-white shadow-sm ${className}`}>
+    <div className={`rounded-2xl border border-slate-200/60 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300 ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+export function CardSolid({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={`rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+export function GlassCard({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={`rounded-2xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg shadow-slate-900/5 ${className}`}>
       {children}
     </div>
   );
@@ -69,7 +85,7 @@ export function Badge({
     warning: 'bg-amber-50 text-amber-700 ring-amber-200',
     danger: 'bg-red-50 text-red-700 ring-red-200',
     info: 'bg-blue-50 text-blue-700 ring-blue-200',
-    teal: 'bg-teal-50 text-teal-700 ring-teal-200',
+    teal: 'bg-brand-50 text-brand-700 ring-brand-200',
   };
   return (
     <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${variants[variant]} ${className}`}>
@@ -90,7 +106,7 @@ export function StatusBadge({ status }: { status: string }) {
 }
 
 export function Spinner({ className = '' }: { className?: string }) {
-  return <Loader2 className={`h-5 w-5 animate-spin text-teal-600 ${className}`} />;
+  return <Loader2 className={`h-5 w-5 animate-spin text-brand-600 ${className}`} />;
 }
 
 export function EmptyState({
@@ -105,7 +121,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 px-6 py-16 text-center">
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/30 px-6 py-16 text-center">
       <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-slate-400 shadow-sm ring-1 ring-slate-200">
         {icon}
       </div>
@@ -156,5 +172,13 @@ export function StarRating({
         );
       })}
     </div>
+  );
+}
+
+export function GradientText({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <span className={`bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-cyan-500 ${className}`}>
+      {children}
+    </span>
   );
 }

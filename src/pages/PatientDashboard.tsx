@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Calendar, Clock, Stethoscope, MapPin, CheckCircle2, XCircle, CalendarClock,
-  Star, Search, Loader2, MessageSquare,
+  Star, Search, Loader2, HeartPulse,
 } from 'lucide-react';
 import { api, type Appointment, type DoctorProfile, type Profile } from '@/lib/api';
 import { formatCurrency, formatDate, formatTime, formatDateTime, parseAvailability, dayNameFromDate } from '@/lib/types';
@@ -53,14 +53,14 @@ export function PatientDashboard() {
   }
 
   if (loading) {
-    return <div className="flex min-h-[60vh] items-center justify-center"><Spinner className="h-7 w-7" /></div>;
+    return <div className="flex min-h-[60vh] items-center justify-center"><Spinner className="h-8 w-8" /></div>;
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-brand-50/30 via-white to-white">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <SectionHeader
-          eyebrow="Patient"
+          eyebrow="Patient Dashboard"
           title={`Welcome back, ${profile?.full_name?.replace(/^Dr\.?\s+/i, '') ?? ''}`}
           description="Manage your appointments, reschedule visits, and share your experience."
         />
@@ -155,7 +155,7 @@ function AppointmentCard({
               <StatusBadge status={apt.status} />
             </div>
             <p className="text-sm text-slate-500">{docProfile?.specialty}</p>
-            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
               <span className="flex items-center gap-1.5"><CalendarClock className="h-4 w-4 text-slate-400" />{formatDateTime(apt.scheduled_at)}</span>
               {docProfile?.clinic_address && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-slate-400" />{docProfile.clinic_address.split(',')[0]}</span>}
             </div>
@@ -206,7 +206,7 @@ function ReviewModal({ appointment, onClose, onSubmitted }: { appointment: Appoi
 
   return (
     <Modal title="Leave a review" onClose={onClose}>
-      {error && <div className="mb-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
+      {error && <div className="mb-3 rounded-xl bg-red-50/80 px-3 py-2 text-sm text-red-700">{error}</div>}
       <p className="text-sm text-slate-600">How was your visit with {appointment.doctor?.full_name}?</p>
       <div className="mt-4 flex justify-center"><StarRating rating={rating} size={36} interactive onChange={setRating} /></div>
       <div className="mt-4">
@@ -214,7 +214,7 @@ function ReviewModal({ appointment, onClose, onSubmitted }: { appointment: Appoi
         <textarea
           value={comment} onChange={(e) => setComment(e.target.value)} rows={4}
           placeholder="Share details about your experience..."
-          className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+          className="w-full rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20 transition-all duration-200"
         />
       </div>
       <div className="mt-5 flex justify-end gap-2">
@@ -262,11 +262,11 @@ function RescheduleModal({ appointment, onClose, onDone }: { appointment: Appoin
 
   return (
     <Modal title="Reschedule appointment" onClose={onClose}>
-      {error && <div className="mb-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
+      {error && <div className="mb-3 rounded-xl bg-red-50/80 px-3 py-2 text-sm text-red-700">{error}</div>}
       <div className="flex items-center justify-between">
-        <button onClick={() => setWeekOffset((w) => w - 1)} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100">‹</button>
+        <button onClick={() => setWeekOffset((w) => w - 1)} className="rounded-xl p-1.5 text-slate-500 hover:bg-slate-100 transition-colors">‹</button>
         <span className="text-sm font-semibold text-slate-900">{weekDays[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – {weekDays[6].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-        <button onClick={() => setWeekOffset((w) => w + 1)} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100">›</button>
+        <button onClick={() => setWeekOffset((w) => w + 1)} className="rounded-xl p-1.5 text-slate-500 hover:bg-slate-100 transition-colors">›</button>
       </div>
       <div className="mt-3 grid grid-cols-7 gap-1.5">
         {weekDays.map((d) => {
@@ -276,7 +276,7 @@ function RescheduleModal({ appointment, onClose, onDone }: { appointment: Appoin
           const isSelected = selectedDate?.toDateString() === d.toDateString();
           return (
             <button key={d.toISOString()} disabled={disabled} onClick={() => { setSelectedDate(d); setSelectedSlot(null); }}
-              className={`flex flex-col items-center rounded-lg border py-2 text-xs transition-all ${isSelected ? 'border-teal-600 bg-teal-600 text-white' : disabled ? 'border-slate-200 bg-slate-50 text-slate-300' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:bg-teal-50'}`}>
+              className={`flex flex-col items-center rounded-xl border py-2 text-xs transition-all ${isSelected ? 'border-brand-500 bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-md' : disabled ? 'border-slate-200 bg-slate-50 text-slate-300' : 'border-slate-200 bg-white text-slate-700 hover:border-brand-400 hover:bg-brand-50'}`}>
               <span className="font-medium uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span>
               <span className="text-sm font-bold">{d.getDate()}</span>
             </button>
@@ -288,7 +288,7 @@ function RescheduleModal({ appointment, onClose, onDone }: { appointment: Appoin
           <p className="text-sm font-medium text-slate-700">{slots.length} times available</p>
           <div className="mt-2 grid grid-cols-3 gap-1.5">
             {slots.map((s) => (
-              <button key={s} onClick={() => setSelectedSlot(s)} className={`rounded-lg border py-2 text-sm font-medium transition-all ${selectedSlot === s ? 'border-teal-600 bg-teal-600 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:bg-teal-50'}`}>{s}</button>
+              <button key={s} onClick={() => setSelectedSlot(s)} className={`rounded-xl border py-2 text-sm font-medium transition-all ${selectedSlot === s ? 'border-brand-500 bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-brand-400 hover:bg-brand-50'}`}>{s}</button>
             ))}
           </div>
         </div>
@@ -305,10 +305,10 @@ function Modal({ title, children, onClose }: { title: string; children: ReactNod
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
-      <Card className="relative z-10 w-full max-w-md p-6">
+      <div className="relative z-10 w-full max-w-md rounded-2xl border border-slate-200/60 bg-white/95 backdrop-blur-xl p-6 shadow-2xl shadow-slate-900/10">
         <h3 className="text-lg font-bold text-slate-900">{title}</h3>
         <div className="mt-4">{children}</div>
-      </Card>
+      </div>
     </div>
   );
 }

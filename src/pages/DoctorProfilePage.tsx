@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo, type ReactNode } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   ArrowLeft, Star, MapPin, Clock, DollarSign, Award, Calendar, CheckCircle2,
-  ChevronLeft, ChevronRight, Loader2, MessageSquare,
+  ChevronLeft, ChevronRight, Loader2, MessageSquare, Stethoscope, Sparkles,
 } from 'lucide-react';
 import { api, type DoctorProfile, type Profile, type Review, type Appointment } from '@/lib/api';
 import {
@@ -104,7 +104,7 @@ export function DoctorProfilePage() {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <Spinner className="h-7 w-7" />
+        <Spinner className="h-8 w-8" />
       </div>
     );
   }
@@ -123,22 +123,23 @@ export function DoctorProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-brand-50/30 via-white to-white">
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-        <Link to="/doctors" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900">
+        <Link to="/doctors" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-brand-600 transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to all doctors
         </Link>
 
-        <Card className="mt-4 overflow-hidden">
-          <div className="h-24 bg-gradient-to-r from-teal-500 to-teal-700" />
+        {/* Profile Card */}
+        <div className="mt-4 rounded-2xl border border-slate-200/60 bg-white shadow-sm overflow-hidden">
+          <div className="h-28 bg-gradient-to-r from-brand-500 via-brand-600 to-cyan-600" />
           <div className="px-6 pb-6 sm:px-8">
-            <div className="-mt-12 flex flex-col gap-4 sm:flex-row sm:items-end">
-              <Avatar name={doctor.profiles?.full_name ?? 'Doctor'} size={96} className="ring-4 ring-white" />
+            <div className="-mt-14 flex flex-col gap-4 sm:flex-row sm:items-end">
+              <Avatar name={doctor.profiles?.full_name ?? 'Doctor'} size={96} className="ring-4 ring-white shadow-xl" />
               <div className="flex-1">
                 <h1 className="text-2xl font-bold text-slate-900">{doctor.profiles?.full_name}</h1>
                 <div className="mt-1 flex flex-wrap items-center gap-2">
                   <Badge variant="teal">{doctor.specialty}</Badge>
-                  <span className="flex items-center gap-1 text-sm text-slate-600">
+                  <span className="flex items-center gap-1 text-sm text-slate-500">
                     <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                     {reviews.length > 0 ? `${avgRating.toFixed(1)} (${reviews.length} review${reviews.length !== 1 ? 's' : ''})` : 'No reviews yet'}
                   </span>
@@ -155,19 +156,20 @@ export function DoctorProfilePage() {
 
             <div className="mt-6">
               <h2 className="text-sm font-semibold text-slate-900">About</h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">{doctor.biography}</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-500">{doctor.biography}</p>
             </div>
           </div>
-        </Card>
+        </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-5">
+          {/* Booking */}
           <div className="lg:col-span-3">
-            <Card className="p-6 sm:p-8">
+            <div className="rounded-2xl border border-slate-200/60 bg-white/80 backdrop-blur-sm p-6 sm:p-8 shadow-sm">
               <h2 className="text-lg font-bold text-slate-900">Book an appointment</h2>
               <p className="mt-1 text-sm text-slate-500">Select a date and available time slot below.</p>
 
               {bookedAppointment ? (
-                <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
+                <div className="mt-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 p-6 text-center ring-1 ring-inset ring-emerald-200/50">
                   <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-600" />
                   <h3 className="mt-3 text-lg font-semibold text-slate-900">Request sent!</h3>
                   <p className="mt-1 text-sm text-slate-600">
@@ -181,7 +183,7 @@ export function DoctorProfilePage() {
               ) : (
                 <>
                   {error && (
-                    <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 ring-1 ring-inset ring-red-200">
+                    <div className="mt-4 rounded-xl bg-red-50/80 backdrop-blur-sm px-4 py-3 text-sm text-red-700 ring-1 ring-inset ring-red-200/50">
                       {error}
                     </div>
                   )}
@@ -189,7 +191,7 @@ export function DoctorProfilePage() {
                   <div className="mt-6 flex items-center justify-between">
                     <button
                       onClick={() => setWeekOffset((w) => w - 1)}
-                      className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                      className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
                       aria-label="Previous week"
                     >
                       <ChevronLeft className="h-5 w-5" />
@@ -200,7 +202,7 @@ export function DoctorProfilePage() {
                     </span>
                     <button
                       onClick={() => setWeekOffset((w) => w + 1)}
-                      className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                      className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
                       aria-label="Next week"
                     >
                       <ChevronRight className="h-5 w-5" />
@@ -221,10 +223,10 @@ export function DoctorProfilePage() {
                           onClick={() => { setSelectedDate(d); setSelectedSlot(null); }}
                           className={`flex flex-col items-center rounded-xl border py-2.5 text-xs transition-all ${
                             isSelected
-                              ? 'border-teal-600 bg-teal-600 text-white shadow-sm'
+                              ? 'border-brand-500 bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-md'
                               : disabled
                                 ? 'border-slate-200 bg-slate-50 text-slate-300 cursor-not-allowed'
-                                : 'border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:bg-teal-50'
+                                : 'border-slate-200 bg-white text-slate-700 hover:border-brand-400 hover:bg-brand-50'
                           }`}
                         >
                           <span className="font-medium uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span>
@@ -247,10 +249,10 @@ export function DoctorProfilePage() {
                             <button
                               key={slot}
                               onClick={() => setSelectedSlot(slot)}
-                              className={`rounded-lg border py-2.5 text-sm font-medium transition-all ${
+                              className={`rounded-xl border py-2.5 text-sm font-medium transition-all ${
                                 selectedSlot === slot
-                                  ? 'border-teal-600 bg-teal-600 text-white'
-                                  : 'border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:bg-teal-50'
+                                  ? 'border-brand-500 bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-md'
+                                  : 'border-slate-200 bg-white text-slate-700 hover:border-brand-400 hover:bg-brand-50'
                               }`}
                             >
                               {formatTime(`${selectedDate.toDateString()} ${slot}`)}
@@ -260,7 +262,7 @@ export function DoctorProfilePage() {
                       )}
                     </div>
                   ) : (
-                    <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-sm text-slate-400">
+                    <div className="mt-6 rounded-xl border border-dashed border-slate-200 bg-slate-50/30 px-4 py-8 text-center text-sm text-slate-400">
                       Select a date to see available times.
                     </div>
                   )}
@@ -279,11 +281,12 @@ export function DoctorProfilePage() {
                   </div>
                 </>
               )}
-            </Card>
+            </div>
           </div>
 
+          {/* Reviews */}
           <div className="lg:col-span-2">
-            <Card className="p-6">
+            <div className="rounded-2xl border border-slate-200/60 bg-white/80 backdrop-blur-sm p-6 shadow-sm">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold text-slate-900">Patient reviews</h2>
                 {reviews.length > 0 && (
@@ -310,12 +313,12 @@ export function DoctorProfilePage() {
                         </div>
                         <span className="text-xs text-slate-400">{formatDate(r.created_at)}</span>
                       </div>
-                      {r.comment && <p className="mt-2 text-sm text-slate-600">{r.comment}</p>}
+                      {r.comment && <p className="mt-2 text-sm text-slate-500">{r.comment}</p>}
                     </div>
                   ))}
                 </div>
               )}
-            </Card>
+            </div>
           </div>
         </div>
       </div>
@@ -325,7 +328,7 @@ export function DoctorProfilePage() {
 
 function InfoTile({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+    <div className="rounded-xl border border-slate-200/60 bg-white/50 p-4 transition-all hover:shadow-sm">
       <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
         {icon}
         {label}
