@@ -7,6 +7,7 @@ import { DoctorsDirectory } from '@/pages/DoctorsDirectory';
 import { DoctorProfilePage } from '@/pages/DoctorProfilePage';
 import { PatientDashboard } from '@/pages/PatientDashboard';
 import { DoctorDashboard } from '@/pages/DoctorDashboard';
+import { DoctorSetup } from '@/pages/DoctorSetup';
 import { LoginPage, SignupPage } from '@/pages/AuthPages';
 import { AboutUs } from '@/pages/AboutUs';
 import { ContactUs } from '@/pages/ContactUs';
@@ -49,6 +50,14 @@ function App() {
               element={
                 <ProtectedRoute role="DOCTOR">
                   <DoctorDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/doctor/setup"
+              element={
+                <ProtectedRoute role="DOCTOR">
+                  <DoctorSetup />
                 </ProtectedRoute>
               }
             />

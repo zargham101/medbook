@@ -18,9 +18,27 @@ interface AppointmentRow extends Appointment {
 export function DoctorDashboard() {
   const { profile } = useAuth();
   const navigate = useNavigate();
+  const [checkingProfile, setCheckingProfile] = useState(true);
   const [appointments, setAppointments] = useState<AppointmentRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'requests' | 'upcoming' | 'history'>('requests');
+
+  useEffect(() => {
+    async function checkProfile() {
+      try {
+        const docProfile = await api.doctorProfile.get();
+        if (!docProfile) {
+          navigate('/doctor/setup', { replace: true });
+          return;
+        }
+      } catch {
+        navigate('/doctor/setup', { replace: true });
+        return;
+      }
+      setCheckingProfile(false);
+    }
+    checkProfile();
+  }, [navigate]);
 
   async function loadAppointments() {
     if (!profile) return;
@@ -36,6 +54,10 @@ export function DoctorDashboard() {
   useEffect(() => {
     loadAppointments();
   }, [profile]);
+
+  if (checkingProfile) {
+    return <div className="flex min-h-[60vh] items-center justify-center"><Spinner className="h-8 w-8" /></div>;
+  }
 
   const pending = appointments.filter((a) => a.status === 'PENDING');
   const upcoming = appointments.filter((a) => a.status !== 'CANCELLED' && new Date(a.scheduled_at) > new Date());
